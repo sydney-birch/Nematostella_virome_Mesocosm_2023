@@ -10,12 +10,12 @@ This repository contains the virome and microbiome work flow for our 2023 Mesoco
       - NC.Female
       - ME.Male
       - ME.Female
-- KO Lines
-      - WT
-      - RLRa
-      - RLRb
-      - MAVs
-      - OAS
-      - RNaseL
+- KO Lines:
+   - WT
+   - RLRa
+   - RLRb
+   - MAVs
+   - OAS
+   - RNaseL
 
   
