@@ -3,13 +3,11 @@ This repository contains the virome, host transcriptome, and 16s rRNA work for o
 
 ### Study Info and Sample Structure: 
 - We have 94 total samples (12 strains, 2 time points [T0, T96], and 4 Reps for each sample [MAVs T96 and OAS T96 have 3 reps]):
--   Clonal lines:          - KO Lines:
-      - FL.Male                 - WT
-      - FL.Female               - RLRa
-      - NC.Male                 - RLRb
-      - NC.Female               - MAVs
-      - ME.Male                 - OAS
-      - ME.Female               - RNaseL
+-   Clonal lines: 
+      - FL.Male  ; FL.Female  ;  NC.Male  ;  NC.Female  ;  ME.Male  ;  ME.Female
+        
+- KO Lines:
+  - WT  ;  RLRa  ;  RLRb  ;  MAVs  ;  OAS  ;  RNaseL
 
 Nematostella were sampled at our intial time point (T0) before going into the mesocosm and 96 hours (T96) after being exposed to natural estuary water from SC. The mesocosms were bins filled with water from the estuary that was bag filtered to remove larger debris. Water changes occured every other day, and each mesocosm bin had a pump to produce water flow for the animals. 
 
