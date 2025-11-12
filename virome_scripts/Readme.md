@@ -123,6 +123,7 @@ Use 1_fastqc.py to loop thru and run fastqc for each sample --> run in raw reads
 			./3.E_samtools_processing_BT.py -b 4
 				## Output: 2 fastq files in each sample name dir (unaligned_{sample_name}_4_ali_paired1.fq)   
 
+
 	#After each alignment run the count reads script and add counts to excel sheet
 		#the script will iterate through each sample directory and count the number of reads in the fastq files
 			sbatch 3.B.2_count_reads_after_samtools.slurm
@@ -205,15 +206,17 @@ assemble all T0 samples into a T0 assembly and all T96 samples into a T96 assemb
 
 #### C.3 Run spades to create two assemblies
 `sbatch ./5.A.4_run_spades_totals.slurm` runs: 
-`spades.py --rnaviral -1 SC_T0-total_R1.fq.gz -2 SC_T0-total_R2.fq.gz -o SC_T0_Total_spades_output
-spades.py --rnaviral -1 SC_T96-total_R1.fq.gz -2 SC_T96-total_R2.fq.gz -o SC_T96_Total_spades_output`
+
+	spades.py --rnaviral -1 SC_T0-total_R1.fq.gz -2 SC_T0-total_R2.fq.gz -o SC_T0_Total_spades_output
+	spades.py --rnaviral -1 SC_T96-total_R1.fq.gz -2 SC_T96-total_R2.fq.gz -o SC_T96_Total_spades_output`
 
 #### C.4 Using the two Total Assemblies - Align fastq files to get normalized read counts
 Next, align the rRNA filtered unmapped reads (presumably viral reads) to the T0 and T96 total assemblies respectively using HISAT2
-	`#Align T0 filtered reads to T0 total assembly: 
-	 ./5.A.5_hisat2_total_assemblies.py -a T0_total_mapping_fastqs -b total-SC-T0_assembly.fa_FIX.fa -c ../../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/ -d T0`
 
-	#Align the T96 filtered reads to the T96 total assembly:
+    #Align T0 filtered reads to T0 total assembly: 
+	 ./5.A.5_hisat2_total_assemblies.py -a T0_total_mapping_fastqs -b total-SC-T0_assembly.fa_FIX.fa -c ../../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/ -d T0
+	 
+  	#Align the T96 filtered reads to the T96 total assembly:
     ./5.A.5_hisat2_total_assemblies.py -a T96_total_mapping_fastqs -b total-SC-T96_assembly.fa_FIX.fa -c ../../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/ -d T96
 
 	#use samtools to create fastq files of the mapped reads:
@@ -225,30 +228,13 @@ Next, align the rRNA filtered unmapped reads (presumably viral reads) to the T0 
      ./4.G_count_reads_in_fastqs.py -a T0_total_mapping_fastqs
      ./4.G_count_reads_in_fastqs.py -a T96_total_mapping_fastqs
 
-Next, calculate the Normalized Read Count in excel: 
+Next, calculate the Normalized Read Count in excel:     
+
 *Number of mapped viral reads to the total assemblies / Number of total raw reads (number of reads after sequencing) * 1000*
+
 
  
  ## 6) Viral Taxonomy Analysis     
-To investigate the viral taxa found in our analysis, we ultimately used NCBI taxon kit. But we first had to identify protiens and find their taxon IDs so we used BLAST and BioEntrez.     
-
-
-A) Download the refseq viral database.    
-`wget https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.protein.faa.gz `     
-*This has 683,238 viral protiens*      
-
-
-B) Make blast databases for each of the 14 viral assemblies     
-`./0_blastdb.sh`     
-
-
-C) Run a tBLASTn using the RefSeq viral database against each of the 14 viral asssemblies.
-`./1_blast.sh viral.1.protein.faa`     
-
-
-D) 
-
-
 
 
 
