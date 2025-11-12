@@ -199,18 +199,19 @@ assemble each individual replicate (93 total)
 ### C) Total Assemblies 
 assemble all T0 samples into a T0 assembly and all T96 samples into a T96 assembly (2 total)
 
-#### C.1 First make two dirs SC_T0_fastqs and SC_T96_fastqs, and copy over all fastqs files to respective directory
+##### C.1) Make two dirs SC_T0_fastqs and SC_T96_fastqs
+Copy over all fastq files to respective directory
 
-#### C.2 Next, run script to concatenate all T0 and all T96 fastq files (run on both)
+##### C.2) Concatenate all T0 and all T96 fastq files (run on both)
 `sbatch A.3_make_totals_files.slurm` runs: `./5.A.3_make_totals_files.py -a ../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/SC_T0_fastqs -b filtered -c ../../../5_assemblies/ -d SC_T0`
 
-#### C.3 Run spades to create two assemblies
+##### C.3) Run spades to create two total assemblies
 `sbatch ./5.A.4_run_spades_totals.slurm` runs: 
 
 	spades.py --rnaviral -1 SC_T0-total_R1.fq.gz -2 SC_T0-total_R2.fq.gz -o SC_T0_Total_spades_output
 	spades.py --rnaviral -1 SC_T96-total_R1.fq.gz -2 SC_T96-total_R2.fq.gz -o SC_T96_Total_spades_output`
 
-#### C.4 Using the two Total Assemblies - Align fastq files to get normalized read counts
+##### C.4) Using the two Total Assemblies - Align fastq files to get normalized read counts
 Next, align the rRNA filtered unmapped reads (presumably viral reads) to the T0 and T96 total assemblies respectively using HISAT2
 
     #Align T0 filtered reads to T0 total assembly: 
