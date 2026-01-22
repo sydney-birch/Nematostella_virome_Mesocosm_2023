@@ -243,9 +243,45 @@ Next, calculate the Normalized Read Count in excel:
 
 
  
-## 8) Host (Nematostella) Analysis    
+## 8) Host (Nematostella) Analysis  
+### Prep) Use Salmon to align reads and get counts
+
+First, align the mapped (Nematostella) reads to the UK transcriptome to get counts and sequence IDs for the reads 
+
+1.A) Copy over transcriptome: GCF_932526225.1/rna.fna (I renamed to uk_transcriptome.fa)
+
+1.B) submit Salmon slurm: sbatch 8_salmon-mapped.slurm
+`#create the index (only run 1 time)
+salmon index -t uk_transcriptome.fa -i mapped_index -k 31 
+#run salmon script to align each replicate
+./8_run_salmon.py -a ../4_RNA_filt/mapped_fastq_files -b ../../8_salmon -c aligned 
+#example line of code of salmon alignment line: 
+salmon quant -p 12 --seqBias --gcBias -i mapped_index -l A -1 {0}/{1}_paired1.fastq.gz -2 {0}/{1}_paired2.fastq.gz -o {1}".format(fastq_dir,sample)`
 
 ### A) Differential Gene Expression     
+1.A) copy over Salmon output files to computer for R analyses - place in a folder called: mapping
+
+`scp -r sbirch1@hpc.charlotte.edu:./../../scratch/sbirch1/Nematostella_transcriptomics/8_salmon/aligned_NH_T* ./`
+
+1.B) Run edgeR script in R to get Differentially Expressed Genes between Timepoints (T0 vs T14) for each location - write out into text files
+
+1.C) Input DEG lists back to the terminal and get header information for each DEG to be used with selectSeqs 
+
+`#first run this script to turn the edgeR input into a list of headers to retrieve: 
+./run_get_headers_from_edgeR.sh --> This runs run_get_headers_from_edgeR.py `
+
+`#Next, move all header lists into a new dir called mapped_selectseqs_header_lists: 
+mv *-header_list ../mapped_selectseqs_header_lists/`
+
+`#Now use script to get full headers from initial accession id to run with selectSeqs: 
+./3_get_full_headers.sh uk_transcriptome.fa --> this will run: script 3.B_get_full_headers.py`
+
+1.D) Run selectSeqs to extract the sequences for each DEG from the transcriptome using the full headers:
+
+`#Run select seq bash script: 
+./run_selectseqs.sh --> this will run ./selectSeqs.pl`
+
+
 
 
 ### B) WGCNA    
