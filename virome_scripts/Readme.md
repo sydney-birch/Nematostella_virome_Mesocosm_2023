@@ -483,6 +483,17 @@ Now run R scripts to look at taxanomic overlaps and run diversity statistics: Co
 
  ## 7) Viral Functional Analysis       
 
+* Run MetaCerberus on A) 93 Individual viral assemblies and B) 24 Collapsed viral assemblies generated in step 5 (spades assemblies)   
+
+     * sbatch 7_metacerberus.slurm    
+        * example line: `metacerberus.py --prodigal ../5_assemblies/fastas_nuc  --hmm ALL --dir_out metacerb_indiv_nuc_2-21-25`   
+
+   * Copy over output files to your computer   
+   * Generate spreadsheets to input into R for KEGG, VOG, PHROG, COG, FOAM (or whichever you are most interested in) for the individual assemblies
+        * First make a merged df in R
+        * Once you make this spreadsheet - transpose it and make a csv with three columns: Term Name (Function), Count, Location
+   * Run R script to analyze MetaCerberus data: Metacerberus_stats_output.R
+
 
  
 ## 8) Host (Nematostella) Analysis  
