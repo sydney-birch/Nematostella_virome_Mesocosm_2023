@@ -515,10 +515,16 @@ salmon index -t uk_transcriptome.fa -i mapped_index -k 31`
 `#example line of code of salmon alignment line: 
 salmon quant -p 12 --seqBias --gcBias -i mapped_index -l A -1 {0}/{1}_paired1.fastq.gz -2 {0}/{1}_paired2.fastq.gz -o {1}".format(fastq_dir,sample)`
 
+
 ### A) Differential Gene Expression     
 1.A) copy over Salmon output files to computer for R analyses - place in a folder called: mapping
 
 `scp -r sbirch1@hpc.charlotte.edu:./../../scratch/sbirch1/Nematostella_transcriptomics/8_salmon/aligned_NH_T* ./`
+
+As a side quest - We first interogated the host gene expression of 56 previously identified Nematostella immune genes. This required: 
+   * Text file of libraries_to_stages.tx (two column file annotating which reps belong to which groups)
+   * Dataframe of Immune gene accid annotations: Immune_genes_56.csv
+   * Rscript: Nematostella_Immune_heatmap_NEE.R
 
 1.B) Run edgeR script in R to get Differentially Expressed Genes between Timepoints (T0 vs T14) for each location - write out into text files 
 script: edgeR_meso_2022_MAPPED_14_groups.R
