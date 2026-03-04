@@ -1,4 +1,4 @@
-# Nematostella_virome_Mesocosm_2023
+# Nematostella Mesocosm 2023: Virome, Host Transcriptome, and 16s Study - Overview
 This repository contains the virome, host transcriptome, and 16s rRNA work for our 2023 Mesocosm study examining how 1) different male and female Nematostella clonal lines and 2) knockout lines of immunity genes, interact with microbes and viruses from a natural, foreign environment (SC estuary). This mesocosom study was conducted in SC at Belle W. Baruch Marine Field Lab in Aug 2023. 
 
 ### Study Info and Sample Structure: 
@@ -44,7 +44,8 @@ Nematostella were sampled at our intial time point (T0) before going into the me
     - A) Use EdgeR to conduct pariwise comparisons (T0 vs T14)
     - B) Run MetaCerberus on DEGs
     - C) Get functional terms: KEG, FOAM
-    - D) Visualize in R 
+    - D) Visualize in R
+    - E) Examine Host Expression of Nematostella Immune gene set
 3) Analyze WGCNA
     - A) Run WGCNA in R
     - B) Run MetaCerberus on Modules from WGCNA
