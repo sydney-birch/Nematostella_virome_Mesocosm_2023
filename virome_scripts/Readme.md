@@ -151,29 +151,25 @@
   ## 4) rRNA Filtration of Viral/Microbial Reads
   Ultimately, in this step we want to have presumably all viral reads, so we need to filter out any prokaryotic and eukaryotic reads.    
 
-  
-  A) Download files to create your rRNA database     
-  `./4.A_RNAdb_download_files.sh`    
+  - A) Download files to create your rRNA database     
+    - `./4.A_RNAdb_download_files.sh`    
+
+  - B) Concatenate all the downloads and run cd-hit to remove duplicate sequences.     
+    - `sbatch 4.B_cat_cd-hit.slurm` this runs: `./4.B_cat_cd-hit.sh RNA_db rRNAdb`     
+
+  - C) Map reads to rRNA db using hisat2       
+    - `sbatch 4.C_filtered_hisat2.slurm` this runs: `./4.C_filtered_hisat2.py -a filtered_unmapped_fastq_files -b rRNAdb_ed1.fa -c unmapped_fastq_files`     
 
   
-  B) Concatenate all the downloads and run cd-hit to remove duplicate sequences.     
-  `sbatch 4.B_cat_cd-hit.slurm` this runs: `./4.B_cat_cd-hit.sh RNA_db rRNAdb`     
+  - D) Use samtools to make fastq files of the reads that did *not* map to rRNA db - these are the primarily viral reads      
+    - `sbatch 4.D_samtools_processing.slurm` this runs: `./4.D_samtools_processing.py -a filtered_unmapped_fastq_files`      
+
+  - E) As an additional filtration step, we also mapped the reads to the NCBI nr database with viruses removed     
+    - `sbatch 4.E_nr_filtered_hisat2.slurm` this runs: `./4.E_nr_filtered_hisat2.py -a ncbi_nr_filtered_unmapped_fastq_files -b ncbi_nr_DB.fa -c filtered_unmapped_fastq_files`      
 
   
-  C) Map reads to rRNA db using hisat2       
-  `sbatch 4.C_filtered_hisat2.slurm` this runs: `./4.C_filtered_hisat2.py -a filtered_unmapped_fastq_files -b rRNAdb_ed1.fa -c unmapped_fastq_files`     
-
-  
-  D) Use samtools to make fastq files of the reads that did *not* map to rRNA db - these are the primarily viral reads      
-  `sbatch 4.D_samtools_processing.slurm` this runs: `./4.D_samtools_processing.py -a filtered_unmapped_fastq_files`      
-
-  
-  E) As an additional filtration step, we also mapped the reads to the NCBI nr database with viruses removed     
-  `sbatch 4.E_nr_filtered_hisat2.slurm` this runs: `./4.E_nr_filtered_hisat2.py -a ncbi_nr_filtered_unmapped_fastq_files -b ncbi_nr_DB.fa -c filtered_unmapped_fastq_files`      
-
-  
-  F) Use samtools to make fastq files of the reads that did *not* map to nr database       
-  `sbatch 4.F_samtools_processing.slurm ` this runs: `./4.F_samtools_processing.py -a ncbi_nr_filtered_unmapped_fastq_files`     
+  - F) Use samtools to make fastq files of the reads that did *not* map to nr database       
+    - `sbatch 4.F_samtools_processing.slurm ` this runs: `./4.F_samtools_processing.py -a ncbi_nr_filtered_unmapped_fastq_files`     
   
   
  ## 5) Make Viral Assemblies 
@@ -181,52 +177,52 @@
  Here, we are going to generate three types of assemblies: A) Collapsed assemblies - where we collapse the replicates to make an assembly for each sample ; B) Individual assemblies - where we will assemble each individual replicate  ; and C) Total assemblies - where we will combine all T0 samples into a T0 assembly and same for T96. The Total assemblies will be used to get normalized read counts. 
 
  ### A) Collapsed replicate Assemblies 
-assemble replicates for each sample (24 total)
- `sbatch 5.A.2_run_spades_collapse_reps.slurm` this runs: `./5.A.2_run_spades_collapse_reps.py -i ../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/` 
+  - assemble replicates for each sample (24 total)
+    - `sbatch 5.A.2_run_spades_collapse_reps.slurm` this runs: `./5.A.2_run_spades_collapse_reps.py -i ../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/` 
  
- Use spades --rnaviral to generate the viral assemblies, an example line of code:     
- ```spades.py --rnaviral --pe1-1 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B1_4_ali_paired1.fq.gz --pe2-1 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B2_4_ali_paired1.fq.gz --pe3-1 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B4_4_ali_paired1.fq.gz --pe1-2 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B1_4_ali_paired2.fq.gz --pe2-2 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B2_4_ali_paired2.fq.gz --pe3-2 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B4_4_ali_paired2.fq.gz -o NS_T0_output```     
+   - Use spades --rnaviral to generate the viral assemblies, an example line of code:     
+     ```spades.py --rnaviral --pe1-1 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B1_4_ali_paired1.fq.gz --pe2-1 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B2_4_ali_paired1.fq.gz --pe3-1 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B4_4_ali_paired1.fq.gz --pe1-2 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B1_4_ali_paired2.fq.gz --pe2-2 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B2_4_ali_paired2.fq.gz --pe3-2 ../../4_RNA_filt/filtered_unmapped_fastq_files/filtered_unaligned_NH_T0-NS_B4_4_ali_paired2.fq.gz -o NS_T0_output```     
     
 
 ### B) Individual replicate Assemblies
-assemble each individual replicate (93 total)
- `sbatch 5.A_run_spades.slurm` this runs: `./5.A_run_spades.py -c ../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/` 
+  - assemble each individual replicate (93 total)
+   - `sbatch 5.A_run_spades.slurm` this runs: `./5.A_run_spades.py -c ../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/` 
 
- Use spades --rnaviral to generate the viral assemblies, an example line of code:     
- ```spades.py --rnaviral -1 {0}_paired1.fq.gz -2 {0}_paired2.fq.gz -o ../../5_assemblies/{1}_spades_output```     
+  - Use spades --rnaviral to generate the viral assemblies, an example line of code:     
+    - `spades.py --rnaviral -1 {0}_paired1.fq.gz -2 {0}_paired2.fq.gz -o ../../5_assemblies/{1}_spades_output`     
     
 ### C) Total Assemblies 
-assemble all T0 samples into a T0 assembly and all T96 samples into a T96 assembly (2 total)
+  - assemble all T0 samples into a T0 assembly and all T96 samples into a T96 assembly (2 total)
 
 ##### C.1) Make two dirs SC_T0_fastqs and SC_T96_fastqs
-Copy over all fastq files to respective directory
+  - Copy over all fastq files to respective directory
 
 ##### C.2) Concatenate all T0 and all T96 fastq files (run on both)
-`sbatch A.3_make_totals_files.slurm` runs: `./5.A.3_make_totals_files.py -a ../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/SC_T0_fastqs -b filtered -c ../../../5_assemblies/ -d SC_T0`
+  - `sbatch A.3_make_totals_files.slurm` runs: `./5.A.3_make_totals_files.py -a ../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/SC_T0_fastqs -b filtered -c ../../../5_assemblies/ -d SC_T0`
 
 ##### C.3) Run spades to create two total assemblies
-`sbatch ./5.A.4_run_spades_totals.slurm` runs: 
+  - `sbatch ./5.A.4_run_spades_totals.slurm` runs: 
 
-	spades.py --rnaviral -1 SC_T0-total_R1.fq.gz -2 SC_T0-total_R2.fq.gz -o SC_T0_Total_spades_output
-	spades.py --rnaviral -1 SC_T96-total_R1.fq.gz -2 SC_T96-total_R2.fq.gz -o SC_T96_Total_spades_output`
+	  - `spades.py --rnaviral -1 SC_T0-total_R1.fq.gz -2 SC_T0-total_R2.fq.gz -o SC_T0_Total_spades_output
+	spades.py --rnaviral -1 SC_T96-total_R1.fq.gz -2 SC_T96-total_R2.fq.gz -o SC_T96_Total_spades_output` 
 
 ##### C.4) Using the two Total Assemblies - Align fastq files to get normalized read counts
-Next, align the rRNA filtered unmapped reads (presumably viral reads) to the T0 and T96 total assemblies respectively using HISAT2
+  - Next, align the rRNA filtered unmapped reads (presumably viral reads) to the T0 and T96 total assemblies respectively using HISAT2
 
-    #Align T0 filtered reads to T0 total assembly: 
-	 ./5.A.5_hisat2_total_assemblies.py -a T0_total_mapping_fastqs -b total-SC-T0_assembly.fa_FIX.fa -c ../../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/ -d T0
+      - Align T0 filtered reads to T0 total assembly: 
+	     - `./5.A.5_hisat2_total_assemblies.py -a T0_total_mapping_fastqs -b total-SC-T0_assembly.fa_FIX.fa -c ../../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/ -d T0`
 	 
-  	#Align the T96 filtered reads to the T96 total assembly:
-    ./5.A.5_hisat2_total_assemblies.py -a T96_total_mapping_fastqs -b total-SC-T96_assembly.fa_FIX.fa -c ../../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/ -d T96
+      - Align the T96 filtered reads to the T96 total assembly:
+         - `./5.A.5_hisat2_total_assemblies.py -a T96_total_mapping_fastqs -b total-SC-T96_assembly.fa_FIX.fa -c ../../4_RNA_filt/rRNA_filtered_unmapped_fastq_files/ -d T96`
 
-	#use samtools to create fastq files of the mapped reads:
-	sbatch 5.A.6_samtools_mapped.slurm
-    ./5.A.6_samtools_mapped.py -a T0_total_mapping_fastqs 
-    ./5.A.6_samtools_mapped.py -a T96_total_mapping_fastqs
+	  - use samtools to create fastq files of the mapped reads:
+	    - `sbatch 5.A.6_samtools_mapped.slurm`
+          - `./5.A.6_samtools_mapped.py -a T0_total_mapping_fastqs` 
+          - `./5.A.6_samtools_mapped.py -a T96_total_mapping_fastqs`
 
-	#get counts of mapped reads
-     ./4.G_count_reads_in_fastqs.py -a T0_total_mapping_fastqs
-     ./4.G_count_reads_in_fastqs.py -a T96_total_mapping_fastqs
+	  - get counts of mapped reads
+        - `./4.G_count_reads_in_fastqs.py -a T0_total_mapping_fastqs`
+        - `./4.G_count_reads_in_fastqs.py -a T96_total_mapping_fastqs`
 
 Next, calculate the Normalized Read Count in excel:     
 
