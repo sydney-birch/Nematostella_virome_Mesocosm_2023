@@ -367,11 +367,16 @@ We conducted this analysis on both the individual assemblies and the collapsed a
 
 
   - Now run R scripts to look at taxanomic overlaps and run diversity statistics:
-      - 6.1.I_Individual_Clonal_genus_work.R *clonal taxonomy work*
-      - 6.1.I_Individual_Clonal_genus_work-adj_reps.R *clonal taxonomy work with no unique taxa across reps*
-      - 6.1.I_Individual_KO_genus_work.R *KO taxonomy work*
-      - 6.1.I_Individual_KO_genus_work-adj_reps.R *KO taxonomy work with no unique taxa across reps*
-      - 6.1.I_Individual_KO_Clonal_genus_work.R *KO and Clonal taxonomy work with no unique taxa across reps*
+      - 6.1.I_Individual_Clonal_genus_work.R
+          - *clonal taxonomy work*
+      - 6.1.I_Individual_Clonal_genus_work-adj_reps.R
+          - *clonal taxonomy work with no unique taxa across reps*
+      - 6.1.I_Individual_KO_genus_work.R
+          - *KO taxonomy work*
+      - 6.1.I_Individual_KO_genus_work-adj_reps.R
+          - *KO taxonomy work with no unique taxa across reps*
+      - 6.1.I_Individual_KO_Clonal_genus_work.R
+          - *KO and Clonal taxonomy work with no unique taxa across reps*
 
 
 ### 2) Run BLAST on Collapsed Assemblies 
