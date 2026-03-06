@@ -14,7 +14,7 @@
 
  
 	
-## 1) Run fastqc
+## Step 1) Run fastqc
   - Use 1_fastqc.py to loop thru and run fastqc for each sample --> run in raw reads dir (1_fastqc.slurm)  
    - `./1_fastqc.py -a ../1_fastqc/before_trim`    
   
@@ -24,7 +24,7 @@
 
  
 	
-## 2) Trimm reads and re-run fastqc 
+## Step 2) Trimm reads and re-run fastqc 
   - A) Run trimmomatic to trim the adaptors (run in 2_trimmomatic dir) - the script loops thru and runs for each sample (2.A_trimmommatic.slurm)
 
     - `./2.A_trimmomatic.py -a ../raw_reads_10-7-24 -b ../2_trimmomatic`   
@@ -46,7 +46,7 @@
 
  
 	
-## 3) Map reads to genome to get two pots of data --> mapped and unmapped    
+## Step 3) Map reads to genome to get two pots of data --> mapped and unmapped    
 
    ### A) Get unmapped reads (non Nematostella reads aka viral/microbial reads)
 
@@ -148,7 +148,7 @@
 	    - `./3.G_mv_fastqs_v2.py -b 4 -c 4_RNA_filt `     
 		- `#Output: all unmapped fastqs will be moved to the RNA_filt unmapped_fastq_files dir`
 
-  ## 4) rRNA Filtration of Viral/Microbial Reads
+  ## Step 4) rRNA Filtration of Viral/Microbial Reads
   Ultimately, in this step we want to have presumably all viral reads, so we need to filter out any prokaryotic and eukaryotic reads.    
 
   - A) Download files to create your rRNA database     
@@ -172,7 +172,7 @@
     - `sbatch 4.F_samtools_processing.slurm ` this runs: `./4.F_samtools_processing.py -a ncbi_nr_filtered_unmapped_fastq_files`     
   
   
- ## 5) Make Viral Assemblies 
+ ## Step 5) Make Viral Assemblies 
 
  Here, we are going to generate three types of assemblies: A) Collapsed assemblies - where we collapse the replicates to make an assembly for each sample ; B) Individual assemblies - where we will assemble each individual replicate  ; and C) Total assemblies - where we will combine all T0 samples into a T0 assembly and same for T96. The Total assemblies will be used to get normalized read counts. 
 
@@ -230,7 +230,7 @@ Next, calculate the Normalized Read Count in excel:
 
 
  
- ## 6) Viral Taxonomy Analysis     
+ ## Step 6) Viral Taxonomy Analysis     
 To investigate the viral taxa found in our analysis, we ultimately used NCBI taxon kit. We first had to identify viral protiens and find their taxon IDs so we used BLAST and retrieved taxids using the Refseq Catalog (much more efficent than using bioentrez like before).   
 We conducted this analysis on both the individual assemblies and the collapsed assemblies      
 
@@ -473,18 +473,18 @@ sbatch 6.2.F_get_full_headers.slurm
 
 
   - 6.2.I) Analyze Taxonomy data in R 
-   * First you'll need to process the data in excel - make a total_Lineage files (two separate KO and Clonal) - import each lineage file and adjust data to columns
+     * First you'll need to process the data in excel - make a total_Lineage files (two separate KO and Clonal) - import each lineage file and adjust data to columns
    	    * Each tab in these file is a location/strain
         * Have chatGPT combine the spreadsheets into KO and Clonal spreadsheets
-   * Additionally, make a spreadsheets called (clonal or KO)_genus.csv and copy each location into a column in this sheet - this will be used as the input in R script
-   * Make a third spreadsheet of the genetic composition of the viruses present using the VMR spreadsheet using xlookup
+     * Additionally, make a spreadsheets called (clonal or KO)_genus.csv and copy each location into a column in this sheet - this will be used as the input in R script
+     * Make a third spreadsheet of the genetic composition of the viruses present using the VMR spreadsheet using xlookup
         * Run two xlookups - one using the species column, the other using virus name column to conduct your search
         * Then run an if statement to merge the data: `=IF(V2=0,W2,V2)` where V2 = species col and W2 = virus name col
         * remove s__ by find and replace
         * Then do a find and replace of 0 (entire cell) with Unknown (entire workbook)
 
 
-Now run R scripts to look at taxanomic overlaps and run diversity statistics: 
+    - Now run R scripts to look at taxanomic overlaps and run diversity statistics: 
       - 6.2.I_Collapsed_Clonal_genus_work.R
           - *clonal taxonomy work*
       - 6.2.I_Collapsed_KO_genus_work.R
@@ -492,99 +492,27 @@ Now run R scripts to look at taxanomic overlaps and run diversity statistics:
      
 
 
- ## 7) Viral Functional Analysis       
+ ## Step 7) Viral Functional Analysis       
 
-* Run MetaCerberus on A) 93 Individual viral assemblies generated in step 5 (spades assemblies)   
+* Run MetaCerberus on 93 Individual viral assemblies generated in step 5 (spades assemblies)   
 
      * sbatch 7_metacerberus.slurm    
         * example line: `metacerberus.py --prodigal ../5_assemblies/fastas_nuc  --hmm ALL --dir_out metacerb_indiv_nuc_2-21-25`   
 
    * Copy over output files to your computer   
    * Generate spreadsheets to input into R for KEGG, VOG, PHROG, COG, FOAM (or whichever you are most interested in) for the individual assemblies
-        * First make a merged df of counts in R (Metacerberus_KO_Indiv.R) of all database of interest terms (KEGG, VOG, PHROG etc) --> import all metacerberus tsvs   
+        * First make a merged df of counts in R (7_Metacerberus_KO_Indiv.R & 7_Metacerberus_Clonal_Indiv.R) of all database of interest terms (KEGG, VOG, PHROG etc) --> import all metacerberus tsvs   
         * After generating the merged df csv --> open in excel and and average the replicate counts (save as a CSV)   
         * Next, choose the terms of interest that you want to make the barplots with (choose less than 18)   
            * Copy the table, transpose and then use to make a CSV that is three columns:  Term Name (Function), Count, Location   
-   * Run R script to analyze MetaCerberus data: Metacerberus_KO_Indiv.R   
+   * Continue Running R scripts to analyze MetaCerberus data:
+       * 7_Metacerberus_KO_Indiv.R
+       * 7_Metacerberus_Clonal_Indiv.R  
 
 
+** Continue with Host analysis in other dir: [Host_analysis](https://github.com/sydney-birch/Nematostella_virome_Mesocosm_2023/tree/main/Host_analysis)
  
-## 8) Host (Nematostella) Analysis  
-### Prep) Use Salmon to align reads and get counts
 
-First, align the mapped (Nematostella) reads to the UK transcriptome to get counts and sequence IDs for the reads 
-
-1.A) Copy over transcriptome: GCF_932526225.1/rna.fna (I renamed to uk_transcriptome.fa)
-
-1.B) submit Salmon slurm: sbatch 8_salmon-mapped.slurm
-`#create the index (only run 1 time)
-salmon index -t uk_transcriptome.fa -i mapped_index -k 31`
-
-`#run salmon script to align each replicate
-./8_run_salmon.py -a ../4_RNA_filt/mapped_fastq_files -b ../../8_salmon -c aligned `
-
-`#example line of code of salmon alignment line: 
-salmon quant -p 12 --seqBias --gcBias -i mapped_index -l A -1 {0}/{1}_paired1.fastq.gz -2 {0}/{1}_paired2.fastq.gz -o {1}".format(fastq_dir,sample)`
-
-
-### A) Differential Gene Expression     
-1.A) copy over Salmon output files to computer for R analyses - place in a folder called: mapping
-
-`scp -r sbirch1@hpc.charlotte.edu:./../../scratch/sbirch1/Nematostella_transcriptomics/8_salmon/aligned_NH_T* ./`
-
-As a side quest - We first interogated the host gene expression of 56 previously identified Nematostella immune genes. This required: 
-   * Text file of libraries_to_stages.tx (two column file annotating which reps belong to which groups)
-   * Dataframe of Immune gene accid annotations: Immune_genes_56.csv
-   * Rscript: Nematostella_Immune_heatmap_NEE.R
-
-1.B) Run edgeR script in R to get Differentially Expressed Genes between Timepoints (T0 vs T14) for each location - write out into text files 
-script: edgeR_meso_2022_MAPPED_14_groups.R
-
-1.C) Input DEG lists back to the terminal and get header information for each DEG to be used with selectSeqs 
-
-`#first run this script to turn the edgeR input into a list of headers to retrieve: 
-./run_get_headers_from_edgeR.sh --> This runs run_get_headers_from_edgeR.py `
-
-`#Next, move all header lists into a new dir called mapped_selectseqs_header_lists: 
-mv *-header_list ../mapped_selectseqs_header_lists/`
-
-`#Now use script to get full headers from initial accession id to run with selectSeqs: 
-./3_get_full_headers.sh uk_transcriptome.fa --> this will run: script 3.B_get_full_headers.py`
-
-1.D) Run selectSeqs to extract the sequences for each DEG from the transcriptome using the full headers:
-
-`#Run select seq bash script: 
-./run_selectseqs.sh --> this will run ./selectSeqs.pl`
-
-1.E) Run DEGs on Metacerberus to get potential functional annotations 
-`#Field: 
-metacerberus.py --fraggenescan ../8_salmon/mapped_selectseqs_fasta_files/FIELD_T0vT14_DEGs_edgeR_output.txt-header_list_full_header-seqs.fa --hmm KOFam_eukaryote --dir_out mapped_FIELD_T0vT14_DEGs
-#FL
-metacerberus.py --fraggenescan ../8_salmon/mapped_selectseqs_fasta_files/FL_T0vT14_DEGs_edgeR_output.txt-header_list_full_header-seqs.fa --hmm KOFam_eukaryote --dir_out mapped_FL_T0_v_T14_DEGs        
-#MA
-metacerberus.py --fraggenescan ../8_salmon/mapped_selectseqs_fasta_files/MA_T0vT14_DEGs_edgeR_output.txt-header_list_full_header-seqs.fa --hmm KOFam_eukaryote --dir_out mapped_MA_T0_v_T14_DEGs  
-#ME
-metacerberus.py --fraggenescan ../8_salmon/mapped_selectseqs_fasta_files/ME_T0vT14_DEGs_edgeR_output.txt-header_list_full_header-seqs.fa --hmm KOFam_eukaryote --dir_out mapped_ME_T0_v_T14_DEGs        
-#NH
-metacerberus.py --fraggenescan ../8_salmon/mapped_selectseqs_fasta_files/NH_T0vT14_DEGs_edgeR_output.txt-header_list_full_header-seqs.fa --hmm KOFam_eukaryote --dir_out mapped_NH_T0_v_T14_DEGs
-#NS
-metacerberus.py --fraggenescan ../8_salmon/mapped_selectseqs_fasta_files/NS_T0vT14_DEGs_edgeR_output.txt-header_list_full_header-seqs.fa --hmm KOFam_eukaryote --dir_out mapped_NS_T0_v_T14_DEGs
-#SC
-metacerberus.py --fraggenescan ../8_salmon/mapped_selectseqs_fasta_files/SC_T0vT14_DEGs_edgeR_output.txt-header_list_full_header-seqs.fa --hmm KOFam_eukaryote --dir_out mapped_SC_T0_v_T14_DEGs
-`
-
-1.F) copy output to computer - turn counts into spreadsheets and make figures in R using script: Metacerberus_stats_output.R
-
-1.G) Make DEG heatmaps 
-`#run script to turn list of DEGs into a string to import to R: 
-./prep_for_R_string_deg.py`
-
-Make heatmaps in R using: Nematostella_mapped_DEG_heatmaps.R
-
-
-
-### B) WGCNA    
- 
   
-## 9) 16s rRNA Analysis (QIIME2)   
+  
 	
