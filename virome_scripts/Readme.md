@@ -256,32 +256,32 @@ We conducted this analysis on both the individual assemblies and the collapsed a
 
 
   - 6.1.D) Decided to trim the blastout to 50 percent identity - more managable and more stringent (originally ran at 70, 60, 50, 40, 30, and 10 percent id - chose 50 percent id):    
-```
+      ```
 			# run 50%: 
-				./1.B_run_trim_blastout_50pid.sh
-					#runs: 1.B_trim_blastout_50_pident.py
+				./6.1.D_run_trim_blastout_50pid.sh
+					#runs: 6.1.D_trim_blastout_50_pident.py
 				
 				# Get counts: 
-					./1.A_get_blast_hit_counts.py -a 50_pi_blastout
-```
+					./6.1.C.2_get_blast_hit_counts.py -a 50_pi_blastout
+      ```
 
 
-6.1.E) Get viral accession IDs for the 50_pi_blastout table from ncbi file (check this later)
-`./2_get_accessions.sh`
+  - 6.1.E) Get viral accession IDs for the 50_pi_blastout table from ncbi file (check this later)
+    - `./6.1.E_get_accessions.sh`
 
 
-6.1.F) Get the full headers from the accession IDs to run with selectSeqs   
-```
-./3_get_full_headers.sh viral.1.1.genomic.fna
-		#this will run script 3.B_get_full_headers.py
+  - 6.1.F) Get the full headers from the accession IDs to run with selectSeqs   
+    ```
+    ./6.1.F_get_full_headers.sh viral.1.1.genomic.fna
+		#this will run script 6.1.F_get_full_headers.py
 
-#Submit slurm 
-sbatch 6.B_get_full_headers.slurm
+    #Submit slurm 
+    sbatch 6.1.F_get_full_headers.slurm
 
-#copy blastout 50% accids and full headers from ternimal to computer - input into spreadsheet
-```   
+    #copy blastout 50% accids and full headers from ternimal to computer - input into spreadsheet
+    ```   
 
-6.1.G) Get Taxids using the Refseq Catalog
+  - 6.1.G) Get Taxids using the Refseq Catalog
    * Access Refseq catalog: https://ftp.ncbi.nlm.nih.gov/refseq/release/README
       * download: `wget https://ftp.ncbi.nlm.nih.gov/refseq/release/release-catalog/RefSeq-release230.catalog.gz`
       * unzip: `gunzip RefSeq-release230.catalog.gz`
@@ -307,27 +307,27 @@ sbatch 6.B_get_full_headers.slurm
 		mv T96_KOs_50_pi_hit1_ALL_accessions-taxids/SC_T96*.M T96_Clonal_50_pi_hit1_ALL_accessions-taxids
 	   ```
 
-   * Submit slurm script to run get_taxids.sh from the RefSeq catalog
+   * Submit slurm script to run 6.1.G_get_taxids.sh from the RefSeq catalog
      ```
 			#T0 Clonal
 			#Adjust the bash script for T0
 			sbatch 4_get_taxids.slurm
-			./4_get_taxids.sh RefSeq-release230.catalog	
+			./6.1.G_get_taxids.sh RefSeq-release230.catalog	
 			
 			#T96 Clonal
 			#Adjust the bash script for T96
 			sbatch 4_get_taxids.slurm
-			./4_get_taxids.sh RefSeq-release230.catalog	
+			./6.1.G_get_taxids.sh RefSeq-release230.catalog	
 
 			#T0 KO
 			#Adjust the bash script for T0
 			sbatch 4_get_taxids.slurm
-			./4_get_taxids.sh RefSeq-release230.catalog	
+			./6.1.G_get_taxids.sh RefSeq-release230.catalog	
 			
 			#T96 KO
 			#Adjust the bash script for T96
 			sbatch 4_get_taxids.slurm
-			./4_get_taxids.sh RefSeq-release230.catalog	
+			./6.1.G_get_taxids.sh RefSeq-release230.catalog	
 
      #copy over taxids_accids to computer
 
@@ -344,14 +344,14 @@ sbatch 6.B_get_full_headers.slurm
    * Copy over taxon_link database info from Meso_22 dir   
    * Copy over taxid files into final_taxids dir   
 
-Run taxon kit: 
-`sbatch 6.5_run_taxonkit.slurm` this runs --> `./5_run_taxonkit.sh final_taxids`   
+  - Run taxon kit: 
+    - `sbatch 6.1.H_run_taxonkit.slurm` this runs --> `./6.1.H_run_taxonkit.sh final_taxids`   
 
-example of code:   
-`cat final_taxids/FIELD-T0_taxid.txt \
+      - example of code:   
+      - `cat final_taxids/FIELD-T0_taxid.txt \
     | ./taxonkit reformat --data-dir TAXONKIT_DB -I 1 -F -P -f "{k}\t{p}\t{c}\t{o}\t{f}\t{g}\t{s}\t{t}" >> FIELD-T0_linage.txt`   
 
-output will be a dir lineage_files that has all info in it --> copy to computer
+    - output will be a dir lineage_files that has all info in it --> copy to computer
 
 
 6.1.I) Analyze Taxonomy data in R 
@@ -366,7 +366,12 @@ output will be a dir lineage_files that has all info in it --> copy to computer
         * Then do a find and replace of 0 (entire cell) with Unknown (entire workbook)
 
 
-Now run R scripts to look at taxanomic overlaps and run diversity statistics: Individual_genus_work.R
+  - Now run R scripts to look at taxanomic overlaps and run diversity statistics:
+      - 6.1.I_Individual_Clonal_genus_work.R *clonal taxonomy work*
+      - 6.1.I_Individual_Clonal_genus_work-adj_reps.R *clonal taxonomy work with no unique taxa across reps*
+      - 6.1.I_Individual_KO_genus_work.R *KO taxonomy work*
+      - 6.1.I_Individual_KO_genus_work-adj_reps.R *KO taxonomy work with no unique taxa across reps*
+      - 6.1.I_Individual_KO_Clonal_genus_work.R *KO and Clonal taxonomy work with no unique taxa across reps*
 
 
 ### 2) Run BLAST on Collapsed Assemblies 
