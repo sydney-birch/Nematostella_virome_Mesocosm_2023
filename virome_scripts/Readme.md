@@ -235,27 +235,27 @@ To investigate the viral taxa found in our analysis, we ultimately used NCBI tax
 We conducted this analysis on both the individual assemblies and the collapsed assemblies      
 
 
-### 1) Run BLAST on Individual Assemblies 
+### 6.1) Run BLAST on Individual Assemblies 
 
-1.A) Download/copy over the refseq viral database.    
-`wget https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.protein.faa.gz `     
-*This has 683,238 viral protiens*      
-
-
-1.B) Make blast databases for each of the 93 viral assemblies     
-`./6.0_blastdb.sh`     
+  - 6.1.A) Download/copy over the refseq viral database.    
+    - `wget https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.protein.faa.gz `     
+    - *This has 683,238 viral protiens*      
 
 
-1.C) Run a BLASTp using the RefSeq viral database against each of the 93 viral asssemblies.
-`sbatch 6.1_blast.slurm`  runs --> `./1_blast.sh viral.1.protein.faa`   
-
-This runs a blast search --> `blastp -query $1 -db $fasta -out ${fasta%.}_ref_blastout -outfmt 6 -max_target_seqs 1 -evalue 0.00001 -num_threads 12 -best_hit_score_edge 0.25 -best_hit_overhang 0.1`        
-
-Get a count of the number of hits:   
-`1.A_get_blast_hit_counts.py -a blastout`   
+  - 6.1.B) Make blast databases for each of the 93 viral assemblies     
+    - `./6.1.B_blastdb.sh`     
 
 
-1.D) Decided to trim the blastout to 50 percent identity - more managable and more stringent (originally ran at 70, 60, 50, 40, 30, and 10 percent id - chose 50 percent id):    
+  - 6.1.C) Run a BLASTp using the RefSeq viral database against each of the 93 viral asssemblies.
+    - `sbatch 6.1.C_blast.slurm`  runs --> `./6.1.C_blast.sh viral.1.protein.faa`   
+
+      - This runs a blast search --> `blastp -query $1 -db $fasta -out ${fasta%.}_ref_blastout -outfmt 6 -max_target_seqs 1 -evalue 0.00001 -num_threads 12 -best_hit_score_edge 0.25 -best_hit_overhang 0.1`        
+
+    - Get a count of the number of hits:   
+      - `6.1.C.2_get_blast_hit_counts.py -a blastout`   
+
+
+  - 6.1.D) Decided to trim the blastout to 50 percent identity - more managable and more stringent (originally ran at 70, 60, 50, 40, 30, and 10 percent id - chose 50 percent id):    
 ```
 			# run 50%: 
 				./1.B_run_trim_blastout_50pid.sh
@@ -266,11 +266,11 @@ Get a count of the number of hits:
 ```
 
 
-1.E) Get viral accession IDs for the 50_pi_blastout table from ncbi file (check this later)
+6.1.E) Get viral accession IDs for the 50_pi_blastout table from ncbi file (check this later)
 `./2_get_accessions.sh`
 
 
-1.F) Get the full headers from the accession IDs to run with selectSeqs   
+6.1.F) Get the full headers from the accession IDs to run with selectSeqs   
 ```
 ./3_get_full_headers.sh viral.1.1.genomic.fna
 		#this will run script 3.B_get_full_headers.py
@@ -281,7 +281,7 @@ sbatch 6.B_get_full_headers.slurm
 #copy blastout 50% accids and full headers from ternimal to computer - input into spreadsheet
 ```   
 
-1.G) Get Taxids using the Refseq Catalog
+6.1.G) Get Taxids using the Refseq Catalog
    * Access Refseq catalog: https://ftp.ncbi.nlm.nih.gov/refseq/release/README
       * download: `wget https://ftp.ncbi.nlm.nih.gov/refseq/release/release-catalog/RefSeq-release230.catalog.gz`
       * unzip: `gunzip RefSeq-release230.catalog.gz`
@@ -340,7 +340,7 @@ sbatch 6.B_get_full_headers.slurm
 			check counts after
      ```
 
-1.H) Run Taxon kit to get lineage information    
+6.1.H) Run Taxon kit to get lineage information    
    * Copy over taxon_link database info from Meso_22 dir   
    * Copy over taxid files into final_taxids dir   
 
@@ -354,7 +354,7 @@ example of code:
 output will be a dir lineage_files that has all info in it --> copy to computer
 
 
-1.I) Analyze Taxonomy data in R 
+6.1.I) Analyze Taxonomy data in R 
    * First you'll need to process the data in excel - make a total_Lineage files (two separate KO and Clonal) - import each lineage file and adjust data to columns
    	    * Each tab in these file is a location/strain
         * Have chatGPT combine the spreadsheets into KO and Clonal spreadsheets
