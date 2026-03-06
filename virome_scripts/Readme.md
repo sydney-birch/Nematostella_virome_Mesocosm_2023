@@ -495,8 +495,7 @@ sbatch 6.2.F_get_full_headers.slurm
  ## Step 7) Viral Functional Analysis       
 
 * Run MetaCerberus on 93 Individual viral assemblies generated in step 5 (spades assemblies)   
-
-     * sbatch 7_metacerberus.slurm    
+  * sbatch 7_metacerberus.slurm    
         * example line: `metacerberus.py --prodigal ../5_assemblies/fastas_nuc  --hmm ALL --dir_out metacerb_indiv_nuc_2-21-25`   
 
    * Copy over output files to your computer   
@@ -510,7 +509,7 @@ sbatch 6.2.F_get_full_headers.slurm
        * 7_Metacerberus_Clonal_Indiv.R  
 
 
-** Continue with Host analysis in other dir: [Host_analysis](https://github.com/sydney-birch/Nematostella_virome_Mesocosm_2023/tree/main/Host_analysis)
+*Continue with Host analysis in other dir: [Host_analysis](https://github.com/sydney-birch/Nematostella_virome_Mesocosm_2023/tree/main/Host_analysis)*
  
 
   
