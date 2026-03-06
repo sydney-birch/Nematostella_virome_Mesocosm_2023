@@ -379,74 +379,75 @@ We conducted this analysis on both the individual assemblies and the collapsed a
           - *KO and Clonal taxonomy work with no unique taxa across reps*
 
 
-### 2) Run BLAST on Collapsed Assemblies 
+### 6.2) Run BLAST on Collapsed Assemblies 
+In this step - adjust the 6.1 scripts accrodingly (input data: 24 collapsed viral assemblies) and run in a separate dir *(only uploading the 6.1 scripts - adjust accordingly)* 
 
-2.A) Download/copy over the refseq viral database.    
-`wget https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.protein.faa.gz `      
+  - 6.2.A) Download/copy over the refseq viral database.    
+    - `wget https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.protein.faa.gz `      
 
-2.B) Make blast databases for each of the 24 collapsed viral assemblies     
-`./6.0_blastdb.sh`     
-
-
-2.C) Run a BLASTp using the RefSeq viral database against 24 collapsed viral asssemblies.
-`sbatch 6.1_blast.slurm`  runs --> `./1_blast.sh viral.1.protein.faa`   
-
-This runs a blast search --> `blastp -query $1 -db $fasta -out ${fasta%.}_ref_blastout -outfmt 6 -max_target_seqs 1 -evalue 0.00001 -num_threads 12 -best_hit_score_edge 0.25 -best_hit_overhang 0.1`        
-
-Get a count of the number of hits:   
-`1.A_get_blast_hit_counts.py -a blastout`   
+  - 6.2.B) Make blast databases for each of the 24 collapsed viral assemblies     
+    - `./6.2.B_blastdb.sh`     
 
 
-2.D) Decided to trim the blastout to 50 percent identity - more managable and more stringent (originally ran at 70, 60, 50, 40, 30, and 10 percent id - chose 50 percent id):    
-```
-			# run 50%: 
-				./1.B_run_trim_blastout_50pid.sh
-					#runs: 1.B_trim_blastout_50_pident.py
+  - 6.2.C) Run a BLASTp using the RefSeq viral database against 24 collapsed viral asssemblies.
+    - `sbatch 6.2.C)_blast.slurm`  runs --> `./6.2.C_blast.sh viral.1.protein.faa`   
+
+      - This runs a blast search --> `blastp -query $1 -db $fasta -out ${fasta%.}_ref_blastout -outfmt 6 -max_target_seqs 1 -evalue 0.00001 -num_threads 12 -best_hit_score_edge 0.25 -best_hit_overhang 0.1`        
+
+    - Get a count of the number of hits:   
+      - `6.2.C.2_get_blast_hit_counts.py -a blastout`   
+
+
+  - 6.2.D) Decided to trim the blastout to 50 percent identity - more managable and more stringent (originally ran at 70, 60, 50, 40, 30, and 10 percent id - chose 50 percent id):    
+   ```
+		# run 50%: 
+			./6.2.D_run_trim_blastout_50pid.sh
+			   #runs: 6.2.D_trim_blastout_50_pident.py
 				
-				# Get counts: 
-					./1.A_get_blast_hit_counts.py -a 50_pi_blastout
+		# Get counts: 
+			./6.2.D_get_blast_hit_counts.py -a 50_pi_blastout
+   ```
+
+
+  - 6.2.E) Get viral accession IDs for the 50_pi_blastout table from ncbi file (check this later)
+`./6.2.E_get_accessions.sh`
+
+
+  - 6.2.F) Get the full headers from the accession IDs to run with selectSeqs   
 ```
-
-
-2.E) Get viral accession IDs for the 50_pi_blastout table from ncbi file (check this later)
-`./2_get_accessions.sh`
-
-
-2.F) Get the full headers from the accession IDs to run with selectSeqs   
-```
-./3_get_full_headers.sh viral.1.1.genomic.fna
+./6.2.F_get_full_headers.sh viral.1.1.genomic.fna
 		#this will run script 3.B_get_full_headers.py
 
 #Submit slurm 
-sbatch 6.B_get_full_headers.slurm
+sbatch 6.2.F_get_full_headers.slurm
 
 #copy blastout 50% accids and full headers from ternimal to computer - input into spreadsheet
 ```   
 
-2.G) Get Taxids using the Refseq Catalog
+  - 6.2.G) Get Taxids using the Refseq Catalog
 
-   * First split the T0s and T96s, into 2 dirs
+     * First split the T0s and T96s, into 2 dirs
      ```
      mkdir T0_ALL_accessions_50_pi
 	 mkdir T96_ALL_accessions_50_pi
      ```
-     * Copy over accession IDs
+    * Copy over accession IDs
        ```
         cp 50_pi_hit1_accessions/SC_T0* T0_ALL_accessions_50_pi/
 		cp 50_pi_hit1_accessions/SC_T96* T96_ALL_accessions_50_pi/
 	   ```
 
-   * Submit slurm script to run get_taxids.sh from the RefSeq catalog
+    * Submit slurm script to run 6.2.G_get_taxids.sh from the RefSeq catalog
      ```
 			#T0 
 			#Adjust the bash script for T0
-			sbatch 6.4_get_taxids.slurm 
-			./4_get_taxids.sh RefSeq-release230.catalog	
+			sbatch 6.2.G_get_taxids.slurm 
+			./6.2.G_get_taxids.sh RefSeq-release230.catalog	
 			
 			#T96 
 			#Adjust the bash script for T96
-			sbatch 6.4_get_taxids.slurm 
-			./4_get_taxids.sh RefSeq-release230.catalog	
+			sbatch 6.2.G_get_taxids.slurm 
+			./6.2.G_get_taxids.sh RefSeq-release230.catalog	
 
      #copy over taxids_accids to computer
 
@@ -457,21 +458,21 @@ sbatch 6.B_get_full_headers.slurm
 			check counts after
      ```
 
-2.H) Run Taxon kit to get lineage information    
-   * Copy over taxon_link database info from Meso_22 dir   
-   * Copy over taxid files into final_taxids dir   
+  - 6.2.H) Run Taxon kit to get lineage information    
+     * Copy over taxon_link database info from Meso_22 dir   
+     * Copy over taxid files into final_taxids dir   
 
-Run taxon kit: 
-`sbatch 6.5_run_taxonkit.slurm` this runs --> `./5_run_taxonkit.sh final_taxids`   
+    - Run taxon kit: 
+      - `sbatch 6.2.H_run_taxonkit.slurm` this runs --> `./6.2.H_run_taxonkit.sh final_taxids`   
 
-example of code:   
-`cat final_taxids/FIELD-T0_taxid.txt \
+      - example of code:   
+        - `cat final_taxids/FIELD-T0_taxid.txt \
     | ./taxonkit reformat --data-dir TAXONKIT_DB -I 1 -F -P -f "{k}\t{p}\t{c}\t{o}\t{f}\t{g}\t{s}\t{t}" >> FIELD-T0_linage.txt`   
 
-output will be a dir lineage_files that has all info in it --> copy to computer
+    - output will be a dir lineage_files that has all info in it --> copy to computer
 
 
-2.I) Analyze Taxonomy data in R 
+  - 6.2.I) Analyze Taxonomy data in R 
    * First you'll need to process the data in excel - make a total_Lineage files (two separate KO and Clonal) - import each lineage file and adjust data to columns
    	    * Each tab in these file is a location/strain
         * Have chatGPT combine the spreadsheets into KO and Clonal spreadsheets
@@ -483,7 +484,12 @@ output will be a dir lineage_files that has all info in it --> copy to computer
         * Then do a find and replace of 0 (entire cell) with Unknown (entire workbook)
 
 
-Now run R scripts to look at taxanomic overlaps and run diversity statistics: Collapsed_genus_work.R
+Now run R scripts to look at taxanomic overlaps and run diversity statistics: 
+      - 6.2.I_Collapsed_Clonal_genus_work.R
+          - *clonal taxonomy work*
+      - 6.2.I_Collapsed_KO_genus_work.R
+          - *KO taxonomy work*
+     
 
 
  ## 7) Viral Functional Analysis       
