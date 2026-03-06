@@ -2,25 +2,26 @@
 
 we are picking up here on Step 8 of the overall analysis to analyze the host transcriptome
 
-## 8) Host (Nematostella) Analysis  
-### Prep) Use Salmon to align reads and get counts
+## Step 8) Host (Nematostella) Analysis  
 
-First, align the mapped (Nematostella) reads to the UK transcriptome to get counts and sequence IDs for the reads 
+### 8.1) Use Salmon to align reads and get counts
 
-1.A) Copy over transcriptome: GCF_932526225.1/rna.fna (I renamed to uk_transcriptome.fa)
+  - First, align the mapped (Nematostella) reads to the UK transcriptome to get counts and sequence IDs for the reads 
 
-1.B) submit Salmon slurm: sbatch 8_salmon-mapped.slurm
-`#create the index (only run 1 time)
+  - 8.1.A) Copy over transcriptome: GCF_932526225.1/rna.fna (I renamed to uk_transcriptome.fa)
+
+  - 8.1.B) submit Salmon slurm: sbatch 8.1.B_salmon-mapped.slurm
+    - `#create the index (only run 1 time)
 salmon index -t uk_transcriptome.fa -i mapped_index -k 31`
 
-`#run salmon script to align each replicate
-./8_run_salmon.py -a ../4_RNA_filt/mapped_fastq_files -b ../../8_salmon -c aligned `
+    - #run salmon script to align each replicate
+      - `./8.1.B_run_salmon.py -a ../4_RNA_filt/mapped_fastq_files -b ../../8_salmon -c aligned `
 
-`#example line of code of salmon alignment line: 
-salmon quant -p 12 --seqBias --gcBias -i mapped_index -l A -1 {0}/{1}_paired1.fastq.gz -2 {0}/{1}_paired2.fastq.gz -o {1}".format(fastq_dir,sample)`
+    - example line of code of salmon alignment line: 
+      - `salmon quant -p 12 --seqBias --gcBias -i mapped_index -l A -1 {0}/{1}_paired1.fastq.gz -2 {0}/{1}_paired2.fastq.gz -o {1}".format(fastq_dir,sample)`
 
 
-### A) Differential Gene Expression     
+### 8.2) Differential Gene Expression     
 1.A) copy over Salmon output files to computer for R analyses - place in a folder called: mapping
 
 `scp -r sbirch1@hpc.charlotte.edu:./../../scratch/sbirch1/Nematostella_transcriptomics/8_salmon/aligned_NH_T* ./`
@@ -76,6 +77,6 @@ Make heatmaps in R using: Nematostella_mapped_DEG_heatmaps.R
 
 
 
-### B) WGCNA    
+### 8.3) WGCNA    
  
 *In Progress*
