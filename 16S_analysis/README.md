@@ -2,7 +2,12 @@
 
 We are picking up here on Step 9 of the overall analysis to analyze the microbiome using QIIME2. 
 
-We have a total of 117 samples: ME.F-T0 has 3 reps, ME.M-T0 has 4 reps, all other samples have 5 reps.  
+We have a total of 117 samples (12 strains, 2 time points [T0, T96]): ME.F-T0 has 3 reps, ME.M-T0 has 4 reps, all other samples have 5 reps.  
+  - Clonal lines: 
+    - FL.Male  ; FL.Female  ;  NC.Male  ;  NC.Female  ;  ME.Male  ;  ME.Female
+        
+  - KO Lines:
+    - WT  ;  RLRa  ;  RLRb  ;  MAVs  ;  OAS  ;  RNaseL
 
 ## 9) 16s rRNA Analysis (QIIME2)   
 I'm using the following tutorials in this analysis: 
