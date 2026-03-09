@@ -1,24 +1,25 @@
 # 16S analysis workflow
 
-We are picking up here on Step 9 of the overall analysis to analyze the microbiome using QIIME2.  
+We are picking up here on Step 9 of the overall analysis to analyze the microbiome using QIIME2. 
 
+We have a total of 117 samples: ME.F-T0 has 3 reps, ME.M-T0 has 4 reps, all other samples have 5 reps.  
+
+## 9) 16s rRNA Analysis (QIIME2)   
 I'm using the following tutorials in this analysis: 
   - Moving Pictures tutorial: https://docs.qiime2.org/2020.6/tutorials/moving-pictures/
   - Atacama soil tutorial (paired end): https://docs.qiime2.org/2024.10/tutorials/atacama-soils/
   - Gut to Soil axis tutorial: https://amplicon-docs.qiime2.org/en/stable/tutorials/gut-to-soil.html
 
-## 9) 16s rRNA Analysis (QIIME2)   
-
-Prep work: 
+### Prep work: 
    * Current data is in a shared projects folder - copy over the files into your working dir and change names   
 `./9.0.A_change_fq_name_and_copy_over.py -a name_change.txt -b /projects/areitze2_research/03_10_25_16S_QK_SB/`   
 
    * Remove underscores in name
 `./9.0.B_remove_underscores_in_name.py -b ../raw_reads/`   
    * Make a metadata file and copy to terminal
-     `scp Meso_2022_16s_metadata_v2.txt sbirch1@hpc.charlotte.edu:../../projects/meso_2023/9_qiime2`
+     `scp Meso_2023_ALL_16s_metadata.tsv sbirch1@hpc.charlotte.edu:../../projects/meso_2023/9_qiime2`
      
-Step 1: Import your data by creating a qiime artifact - follow Casava 1.8 paired-end demultiplexed fastq   
+### Step 1: Import your data by creating a qiime artifact - follow Casava 1.8 paired-end demultiplexed fastq   
 
 ```
 module load qiime2/amplicon-2024.10
@@ -37,7 +38,7 @@ qiime demux summarize \
 ```
 
 
-Step 2: Sequence quality control and feature table construction - I'm using option 1: DADA2
+### Step 2: Sequence quality control and feature table construction - I'm using option 1: DADA2
 
 ```
 #part a - quality filter and truncate(denoise) 
