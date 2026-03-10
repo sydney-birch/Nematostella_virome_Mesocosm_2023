@@ -77,4 +77,19 @@ qiime metadata tabulate \
 		mv rep-seqs-dada2.qza rep-seqs.qza
 		mv table-dada2.qza table.qza
 ```
+
+### Step 3 Generate a tree for phylogenetic diversity analysis 
+```
+qiime phylogeny align-to-tree-mafft-fasttree \
+  --i-sequences rep-seqs.qza \
+  --o-alignment aligned-rep-seqs.qza \
+  --o-masked-alignment masked-aligned-rep-seqs.qza \
+  --o-tree unrooted-tree.qza \
+  --o-rooted-tree rooted-tree.qza
+```
+
+Next chose a sampling depth based on table.qzv:
+  - 61428 --> Retained 7,125,648 (36.12%) features in 116 (99.15%) samples at the specifed sampling depth. (4 reps OAS T96 and keeps all 3 reps of ME.F.T0 if go above at 2 reps)
+
+
 *In Progress*
